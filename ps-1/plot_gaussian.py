@@ -8,13 +8,12 @@ Plot the Gaussian, set appropriate x-limits, show x=0 axis, and format plot and 
 Finally, save the figure and then show it.
 '''
 sigma = 3
-norm = (1/(sigma * pn.sqrt(2 * pn.pi)))
 
-def gaussian(x, N, stdev):
-    return N * pn.exp(-(x/(2 * stdev)) ** 2)
+def gaussian(x, stdev):
+    return (1/(sigma * pn.sqrt(2 * pn.pi))) * pn.exp(-(x/(2 * stdev)) ** 2)
 
 X = pn.linspace(-10, 10, 100, dtype=pn.float64)
-Y = gaussian(X, norm, sigma)
+Y = gaussian(X, sigma)
 
 plt.plot(X, Y)
 plt.xlim(-10, 10)
