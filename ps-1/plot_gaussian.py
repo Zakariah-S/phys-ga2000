@@ -10,7 +10,7 @@ Finally, save the figure and then show it.
 sigma = 3
 
 def gaussian(x, stdev):
-    return (1/(sigma * pn.sqrt(2 * pn.pi))) * pn.exp(-(x/(2 * stdev)) ** 2)
+    return (1/(sigma * pn.sqrt(2 * pn.pi))) * pn.exp(-(1/2)*(x/stdev) ** 2)
 
 X = pn.linspace(-10, 10, 100, dtype=pn.float64)
 Y = gaussian(X, sigma)
