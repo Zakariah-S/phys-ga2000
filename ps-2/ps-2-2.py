@@ -43,7 +43,7 @@ def problem_2_2a_solver():
     print(result64)
     # >> 1.1102230246251565e-16
     print(f"log_2 of the above: {np.log2(result64)}")
-    # >> -53
+    # >> -53 
 
 problem_2_2a_solver() #So I only have to comment out one line when I'm working on the other parts of the problem
 

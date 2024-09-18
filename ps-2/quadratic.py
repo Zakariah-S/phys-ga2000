@@ -73,11 +73,17 @@ def quadratic(a, b, c) -> np.ndarray:
         solutions: np.ndarray = np.array([], dtype=np.complex128)
         #Change the determinant to a complex number
         determinant = np.complex128(determinant)
+        solution_1 = 2*c/(-b - np.sqrt(determinant))
+        solution_2 = (-b - np.sqrt(determinant)) / (2*a)
     else: #work using real numbers i.e. float64s
         solutions: np.ndarray = np.array([], dtype=np.float64)
-    #Get the two solutions, but using the forms from a and b that don't cause huge subtraction errors
-    solution_1 = 2*c/(-b - np.sqrt(determinant))
-    solution_2 = (-b - np.sqrt(determinant)) / (2*a)
+    #Get the two solutions, but using the equation forms from a and b that don't cause huge subtraction errors
+    if b >= np.float64(0):
+        solution_1 = 2*c/(-b - np.sqrt(determinant))
+        solution_2 = (-b - np.sqrt(determinant)) / (2*a)
+    else: 
+        solution_1 = (-b + np.sqrt(determinant)) / (2*a)
+        solution_2 = 2*c/(-b + np.sqrt(determinant))
     solutions = np.append(solutions, np.array([solution_1, solution_2]))
 
     print(f"Solutions: {solutions}")

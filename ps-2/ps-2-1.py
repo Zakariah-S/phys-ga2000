@@ -1,6 +1,6 @@
 import numpy as np
 
-#-----Using NumPy's frexp function and working exclusively in floats-----#
+#-----Using NumPy's frexp function and working exclusively in floats-------------------------------#
 print("*****Attempt 1*****")
 num: float = 100.98763
 # print(f'Number: {num}')
@@ -21,8 +21,10 @@ print(f'Number when converted to float64 and back: {decimal_mantissa64 * 2 ** ex
 difference = (np.float64(decimal_mantissa32 * 2 ** exp32) - decimal_mantissa64 * 2 ** exp64)
 print(f'Difference between the two results: {difference}')
 # >> 2.7514648479609605e-06
+print(f"Fractional difference: {difference/np.float64(num)}")
 
-#-----Using Professor Blanton's get_bits function to reproduce the represented number as an exact fraction-----#
+
+#-----Using Professor Blanton's get_bits function to reproduce the represented number as an exact fraction--------------------#
 print("\n*****Attempt 2*****")
 #The following function is from cell 13 of Professor Blanton's 'Intro' Jupyter noteook.
 def get_bits(num) -> list:
@@ -101,3 +103,4 @@ numerator, denominator = reconstruct_fraction(bits)
 difference = np.abs(numerator/denominator - np.float64(num))
 print(f"The difference between the real value and the represented one is approximately {difference}")
 # >> 2.7514648479609605e-06
+print(f"Fractional difference: {difference/np.float64(num)}")

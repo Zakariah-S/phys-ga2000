@@ -21,9 +21,13 @@ def mandelbrot(N: int, iterations: int = 100):
         marker[np.absolute(z) > 2] = 0 #points marked 0 are excluded from the set
     
     plt.imshow(marker, origin='lower', extent=(-2, 2, -2, 2))
+    plt.title("Mandelbrot Set")
+    plt.xlabel("Real")
+    plt.ylabel("Imaginary")
+    plt.savefig("mandelbrot.png")
     plt.show()
 
-# mandelbrot(1000, 20)
+mandelbrot(1000, 100)
 
 def colored_mandelbrot(N: int, iterations: int = 100) -> np.ndarray:
     ''' -
@@ -44,6 +48,10 @@ def colored_mandelbrot(N: int, iterations: int = 100) -> np.ndarray:
     
     plt.imshow(marker, origin='lower', extent=(-2, 2, -2, 2))
     plt.colorbar()
+    plt.title("Mandelbrot Set")
+    plt.xlabel("Real")
+    plt.ylabel("Imaginary")
+    plt.savefig("coloured_mandelbrot.png", dpi=400)
     plt.show()
 
-colored_mandelbrot(1000, 20)
+colored_mandelbrot(1000, 100)
