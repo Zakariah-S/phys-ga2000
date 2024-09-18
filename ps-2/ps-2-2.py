@@ -84,10 +84,17 @@ def find_extrema(float_func = np.float32):
     return smallest, largest
 
 def problem_2_2b_solver():
-    print(find_extrema())
-    # >> (1e-45, 3.402823669209385e+38)
-    print(find_extrema(np.float64))
-    # >> (5e-324, 1.7976931348623157e+308)
+    small32, large32 = find_extrema(np.float32)
+    print(small32, large32)
+    # >> 1e-45, 3.402823669209385e+38
+    print(np.log2(small32))
+    # >> -149
+
+    small64, large64 = find_extrema(np.float64)
+    print(small64, large64)
+    # >> 5e-324, 1.7976931348623157e+308
+    print(np.log2(small64))
+    # >> -1074
 
 problem_2_2b_solver() #So I only have to comment out one line when I'm working on the other parts of the problem
 
@@ -108,3 +115,4 @@ def solve_problem_using_numpy_builtins():
     print(f"The largest float64 is {np.finfo(np.float64).max}")
 
 solve_problem_using_numpy_builtins() #So I only have to comment out one line when I'm working on the other parts of the problem
+print(np.log2(np.finfo(np.float32).smallest_subnormal))

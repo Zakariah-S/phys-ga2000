@@ -46,15 +46,35 @@ def get_madelung_noloop(L: int) -> np.float64:
 get_madelung_noloop(100)
 
 if __name__ == "__main__":
-    #Madellung calculations:
-    # print(get_madelung_loop(100))
+    #-----Madellung calculations:
+    M_true = -1.7476 #true Madellung constant
+    M_1 = get_madelung_loop(100)
+    print(M_1)
     # >> -1.7418198158396148
-    # print(get_madelung_noloop(100))
-    # >> -1.7418198158361038
+    abs_error = np.abs(M_true - M_1)
+    print(abs_error)
+    # >> 0.005780184160385282
+    frac_error = np.abs(abs_error/M_true)
+    print(frac_error)
+    # >> 0.0033074983751346316
 
-    #Timing the calculation
+    M_2 = get_madelung_noloop(100)
+    print(M_2)
+    # >> -1.7418198158361038
+    abs_error = np.abs(M_true - M_2)
+    print(abs_error)
+    # >> 0.0057801841638962514
+    frac_error = np.abs(abs_error/M_true)
+    print(frac_error)
+    # >> 0.0033074983771436547
+
+    #-----Timing the calculation
     import timeit
-    print(timeit.timeit("get_madelung_loop(40)", setup="from __main__ import get_madelung_loop", number=100))
-    # >> 131.251118484 s for a lattice side length of 2(40) + 1
-    print(timeit.timeit("get_madelung_noloop(40)", setup="from __main__ import get_madelung_noloop", number=100))
-    # >> 2.931880102000008 s for a lattice side length of 2(40) + 1
+    time1 = timeit.timeit("get_madelung_loop(100)", setup="from __main__ import get_madelung_loop", number=1)
+    print(time1)
+    # >> 19.478233301 s for a lattice side length of 2(100) + 1
+    time2 = timeit.timeit("get_madelung_noloop(100)", setup="from __main__ import get_madelung_noloop", number=1)
+    print(time2)
+    # >> 0.6514724299999983 s for a lattice side length of 2(100) + 1
+    print(time1/time2)
+    # >> Method 2 runs ~29.8987837459216x faster than method 1
