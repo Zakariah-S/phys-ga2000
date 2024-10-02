@@ -4,6 +4,8 @@ Then: (c) Test the convergence by evaluating the choices N = 10, 20, 30, 40, 50,
 '''
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 #-----Part A-----#
 def func_rescale(func, xp=None, range=None):
@@ -14,6 +16,9 @@ def func_rescale(func, xp=None, range=None):
     
     Parameters
     ----------
+    func : function(float)
+        Function that we want to rescale
+        
     xp : np.float32 or np.float64
         input parameter (in new limits' coordinates)
 
@@ -25,9 +30,8 @@ def func_rescale(func, xp=None, range=None):
     fn : np.float32 or np.float64
         output of rescaled function
 """
-    weight = (range[1] - range[0]) * 0.5
     x = range[0] + 0.5 * (range[1] - range[0]) * (xp + 1.)
-    return(weight * func(x))
+    return((range[1] - range[0]) * 0.5 * func(x))
 
 def cv(T, N=50, DT=428, num=6.022e25):
     """
@@ -57,15 +61,15 @@ def cv(T, N=50, DT=428, num=6.022e25):
     #Get the Legendre roots and associated weights to use for Gaussian quadrature
     xp, weights = np.polynomial.legendre.leggauss(N)
     
+    #Define the expression we want to rescale and integrate
+    def int_formula(x):
+        return np.power(x, 4) * np.exp(x) / np.power((np.exp(x) - 1), 2)
+    
     #Loop through the T array and compute cv(T) for each
     i = 0
     while i < T.size:
         #Set up range so we can feed it into func_rescale
         range = np.array([0, DT/T[i]], dtype=np.float64)
-
-        #Define the expression we want to integrate
-        def int_formula(x):
-            return np.power(x, 4) * np.exp(x) / np.power((np.exp(x) - 1), 2)
 
         #Compute the integral by dotting the rescaled function values with the weights
         gauss_integral = (func_rescale(int_formula, xp, range) * weights).sum()
@@ -73,23 +77,29 @@ def cv(T, N=50, DT=428, num=6.022e25):
 
         i += 1
 
-    return T, cv
+    return T, 9 * num * 1.380649e-23 * np.power(T/DT, 3) * cv
 
 #-----Part B-----#
 
 def part_b():
-    Ts, cvs = cv(np.arange(5, 500))
+    #Plot the c_V(T) curve
+    Ts, cvs = cv(np.arange(5, 501))
     plt.plot(Ts, cvs)
+    plt.title("Heat Capacity $C_V$ vs. Temperature")
+    plt.xlabel("Temperature (K)")
+    plt.ylabel("$C_V$ (J/K)")
+    plt.savefig("cv_curve.eps", format="eps")
     plt.show()
 
-# part_b()
+part_b()
 
 #-----Part C-----#
-
+#Plot C_V vs. T for each N 
+#(deprecated because I decided to instead plot the error in the Gaussian quadrature integral vs. N below)
 def part_c(Ns):
     with open("cv_data.txt", 'w') as f:
         header_string = "temps"
-        temps = np.arange(5, 500)
+        temps = np.arange(5, 501)
         data_arr = np.zeros((len(Ns)+1, temps.size))
 
         data_arr[0] = temps
@@ -112,9 +122,48 @@ def part_c(Ns):
     plt.legend()
     plt.title("$C_V$ vs. Temperature")
     plt.xlabel("Temperature (K)")
-    plt.ylabel("$C_V$")
+    plt.ylabel("$C_V$ (J/K)")
 
     plt.savefig("cv_curves.eps", format="eps")
     plt.show()
 
 part_c(Ns=[10, 20, 30, 40, 50, 60, 70])
+
+#-----Part C-----#
+
+def part_c_again(Ns, temps = np.arange(5, 501)):
+    Ns = np.array(Ns, dtype=np.uint32)
+    data_arr = np.zeros((len(Ns), temps.size))
+
+    i = 0
+    while i < Ns.size:
+        data_arr[i] = cv(temps, Ns[i])[1]
+        i += 1
+    
+    data_arr = data_arr.T
+
+    cmap = plt.get_cmap('coolwarm')
+    colors = [cmap(i) for i in np.linspace(0, 1, temps.size)]
+
+    #Set up figure with a small window on the side for a colorbar
+    fig, axs = plt.subplots(1, 2, width_ratios=[40, 1])
+    i = 0
+    while i < temps.size:
+        best_val = data_arr[i][-1]
+        axs[0].plot(Ns, ((data_arr[i] - best_val) / best_val), color=colors[i])
+        i += 1
+    
+    axs[0].set_title("Error in $C_V$ vs. number of sample points N")
+    axs[0].set_xlabel("N")
+    axs[0].set_ylabel(r"$\frac{c_v(N) - c_v}{c_v}$")
+
+    #Set up colorbar with the cmap we used for each curve
+    norm = mpl.colors.Normalize(vmin=temps[0], vmax=temps[-1])
+    cb1 = mpl.colorbar.ColorbarBase(axs[1], cmap=cmap, norm=norm)
+    cb1.set_label('Temperature (K)')
+
+    plt.savefig("cv_errors.eps", format="eps")
+    plt.show()
+    print(data_arr.shape)
+
+part_c_again(Ns=[10, 20, 30, 40, 50, 60, 70])
