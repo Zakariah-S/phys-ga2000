@@ -45,7 +45,7 @@ def part_a(Ns = np.arange(0, 4), xlims=np.array([-4, 4])):
     plt.savefig("ho_curves.eps", format='eps')
     plt.show()
 
-part_a()
+# part_a()
 
 #-----Debugging-----#
 def check_hermites():
@@ -75,7 +75,7 @@ def part_b(N = 30, xlims=np.array([-10, 10])):
     plt.savefig("ho_curve.eps", format='eps')
     plt.show()
 
-part_b()
+# part_b()
 
 #-----Part C-----#
 
@@ -140,7 +140,7 @@ def get_ex_x_sq(n, N=100, q=2.3):
     
     print(f"<x^2> = {ex_x_sq}\nsqrt(<x^2> = {rms_x})")
 
-get_ex_x_sq(n=5, q=5.5)
+# get_ex_x_sq(n=5, q=5.5)
 # >> <x^2> = 5.500000000000023
 # >> x-rms = 2.3452078799117198
 
@@ -176,10 +176,12 @@ def get_ex_x_sq_gh(n, N=100):
     rms_x = (1/np.sqrt(np.power(2., n) * factorial(n) * np.sqrt(np.pi))) * np.sqrt(gauss_integral)
     return rms_x
 
-print(get_ex_x_sq_gh(n=5, N=100))
+# print(get_ex_x_sq_gh(n=5, N=100))
 # >> <x^2> = 5.499999999999995, 
 # >> x-rms = 2.3452078799117135
 
 #Get errors
 print((5.500000000000023 - 5.5)/5.5)
 print((5.5-5.499999999999995)/5.5)
+
+print(np.polynomial.legendre.leggauss(10)[1])
