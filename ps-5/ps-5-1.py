@@ -39,9 +39,10 @@ def part_a(): #Plot function, derivative, and approximated derivative
     axs[1].set_xlabel("x")
     axs[1].set_ylabel("Residuals")
 
+    plt.savefig("cdd.eps", format='eps')
     plt.show()
 
-part_a()
+# part_a()
 
 #-----Part B-----#
 
