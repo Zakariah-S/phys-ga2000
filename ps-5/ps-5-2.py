@@ -23,11 +23,12 @@ def part_a():
     colors = ["black", "gray", "lightgrey"]
     for a in np.arange(2, 5):
         plt.plot(x, gamma_integrand(x, a), label=f"a = {a}", color=colors[a-2])
+        plt.vlines(x= a-1, ymin=0, ymax=gamma_integrand(a-1, a), color='red')
 
     plt.legend()
     plt.title("Gamma function Integrand for Varying $a$")
     plt.xlabel("x")
-    plt.ylabel(r"$x^{a-1}e^{-x}$")
+    plt.ylabel(r"g(x) = $x^{a-1}e^{-x}$")
     plt.savefig("gamma.eps", format="eps")
     plt.show()
 
@@ -142,19 +143,25 @@ def gamma(a, N=100, z=0, weights=None):
 def part_e():
     print(gamma(1.5)) #Should be ~0.8862269254527579
     # >> 0.8863478841664341
-    print(np.sqrt(np.pi)/2)
-    # >> 0.8862269254527579
+    print(np.abs(gamma(1.5) - np.sqrt(np.pi)/2) / (np.sqrt(np.pi)/2))
+    # >> 0.00013648729259080775
 part_e()
 
 #-----Part F-----#
 
 def part_f():
+    from math import factorial
     print(gamma(3)) #Should be 2! = 2
     # >> 1.9999998885682069
     print(gamma(6)) #Should be 5! = 120
     # >> 120.00000005608909
     print(gamma(10)) #Should be 9! = 362880
     # >> 362880.00000002544
+    for i in [3, 6, 10]:
+        print(np.abs(gamma(i) - factorial(i-1)) / factorial(i))
+        # >> 1.857196552101925e-08
+        # >> 7.79015173356533e-11
+        # >> 7.009685796733151e-15
 part_f()
 
 #-----For my own curiosity's sake-----#
@@ -193,4 +200,4 @@ def plot_resids(low=1, high=10, step = 1, N=100):
 
     plt.show()
 
-plot_resids(high=15)
+# plot_resids(high=15)
