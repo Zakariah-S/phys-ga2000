@@ -146,7 +146,7 @@ def stats_vs_N(Ns, y_num = 100000):
 
 #-----Part D: Estimate at which N the skewness and kurtosis have reached about 1% of their value for N = 1-----#
 
-def find_threshold_N(stat_func, threshold=0.01, y_num = 100000, iterations=1):
+def find_threshold_N(stat_func, threshold=0.01, y_num = 10000, iterations=1):
     '''
     For a given statistic-generating function that acts on the array of random variates y,
     find the threshold N after which stat_func(y) < (threshold) * (stat_func(x) for the distribution P(x) = e^(-x)).
@@ -157,8 +157,8 @@ def find_threshold_N(stat_func, threshold=0.01, y_num = 100000, iterations=1):
     y_num: int
         The number of random variates y in each statistical ensemble.
     '''
-    N_vals = np.zeros(iterations, dtype=np.int128)
 
+    #function for finding the threshold N once
     def get_one_N():
         x = get_random_variates(1, y_num)
         exp_stat = stat_func(x)
@@ -172,6 +172,14 @@ def find_threshold_N(stat_func, threshold=0.01, y_num = 100000, iterations=1):
             curr_stat = next_stat
             x_num *= 10
             next_stat = stat_func(get_random_variates(x_num, y_num))
+            if next_stat > curr_stat: 
+                '''If the statistic for the next N is higher than that for the current one, 
+                   recalculate both the current one and the next one.
+                   This helps to stop the programme from using all available RAM
+                   and destroying my computer'''
+                x_num = min(int(x_num / 10), 1)
+                curr_stat = stat_func(get_random_variates(x_num, y_num))
+                next_stat = curr_stat
             print(next_stat, x_num)
 
         #Adopt an additive step-size = current x_num and keep iterating over Ns. This lets us search the range [10^(x_num), 10^(x_num+1).
@@ -185,11 +193,33 @@ def find_threshold_N(stat_func, threshold=0.01, y_num = 100000, iterations=1):
                 curr_stat = next_stat
                 x_num += step
                 next_stat = stat_func(get_random_variates(x_num, y_num))
+                if next_stat > curr_stat:
+                    '''Same goal here as for the extended comment in the loop above. Avoid RAM-related issues.'''
+                    x_num -= step
+                    curr_stat = stat_func(get_random_variates(x_num, y_num))
+                    next_stat = curr_stat
                 print(next_stat, x_num)
             x_num -= step
             step = int(step / 10)
             print(f"New step-size: {step}")
-        return 0
+        return x_num
+    
+    #initialise array for storing many attemps at finding the threshold N
+    N_vals = np.zeros(iterations, dtype=np.int64)
 
-# find_threshold_N(skew)
-print(int(0.1))
+    for i in range(iterations):
+        print(f"Iteration {i}")
+        N_vals[i] = get_one_N()
+
+    print(N_vals)
+
+    return N_vals, np.mean(N_vals), np.std(N_vals)
+
+find_threshold_N(skew, iterations=10)
+# >> Ns: [2411  2189  1999  5000  9889  2889 10001 10110  1643 11189]
+# >> Mean: 5732
+# >> Error: 3838.0504947173376
+find_threshold_N(kurtosis, iterations=10, y_num=1000)
+# >> Ns: [42  32 110 101  40  37  29  45  40 100]
+# >> Mean: 57.6
+# >> Error: 30.6
