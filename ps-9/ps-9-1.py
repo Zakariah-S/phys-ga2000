@@ -160,7 +160,7 @@ def partc():
     plt.tight_layout()
     plt.savefig("anhar.eps", format="eps")
     plt.show()
-# partc()
+partc()
 
 #-----Part D-----#
 def partd():
@@ -182,7 +182,7 @@ def partd():
     fig.suptitle("Phase Space Plots for Oscillators", weight='bold')
     plt.savefig("phase.eps", format="eps")
     plt.show()
-# partd()
+partd()
 
 #-----Part E-----#
 def vanderpol(steps: int = 1001, start=0., end=20., w=1., u = 1., x0 = 1., v0 = 0.):
@@ -222,4 +222,4 @@ def parte():
 
     plt.savefig("vdp.eps", format='eps')
     plt.show()
-# parte()
+parte()
