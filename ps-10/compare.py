@@ -36,13 +36,13 @@ def snapshots():
     x, psi1, dt = ps.load_data('welldata.npz')
     x, psi2, dt = ps.load_data('welldata2.npz')
 
-    fig, axs = plt.subplots(4, 2, sharex = 'col', sharey=True, figsize=[5, 7.5])
+    fig, axs = plt.subplots(4, 2, sharex = 'col', sharey=True, figsize=[6, 7.5])
 
     fig.add_subplot(111, frameon=False)
     plt.tick_params(labelcolor='none', which='both', top=False, bottom=False, left=False, right=False)
     plt.xlabel('$x$ ($m$)')
     plt.ylabel('$\psi(x,~t)$ ($m^{-1}$)')
-    plt.title('Integration of $\psi(x,~t)$ Using Different PDE Methods', y=1.08)
+    plt.title('Integration of $\psi(x,~t)$ Using Different PDE Methods', y=1.08, fontstyle='italic')
 
     # fig.supxlabel('$x$ ($m$)')
     # fig.supylabel('$\psi(x,~t)$ ($m^{-1}$)')
@@ -52,14 +52,13 @@ def snapshots():
     axs[0][1].set_title('Spectral')
 
     frames = np.arange(0, 1501, 500)
+    frames[0] = 100 #Changed because I need to plot the wavefunction at t = 1e-16 s
 
     i = 0
     for row in axs:
         row[0].plot(x / 1e-8, psi1[frames[i]], lw=0.7)
         row[1].plot(x, psi2[frames[i]], lw=0.7)
-        if i == 0:
-            timer_text = '$t = $\t$0~s$'
-        else: timer_text = f'$t = $\t${np.format_float_scientific(dt * frames[i], precision=2, trim="k", pad_left=2, min_digits=2)}~s$'
+        timer_text = f'$t = $\t${np.format_float_scientific(dt * frames[i], precision=2, trim="k", pad_left=2, min_digits=2)}~s$'
         for j in [0, 1]:
             row[j].annotate(timer_text, 
                         xy=(0., 1.), xycoords='axes fraction', xytext=(1.2, -2.0), textcoords='offset fontsize', fontsize='x-small')
