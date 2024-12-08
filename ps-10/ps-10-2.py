@@ -51,14 +51,16 @@ def test_calc(N: float, initial_state_func):
 def simulate_well(N: float, initial_state_func, steps: int = 1000, dt: float = 1e-18):
     x = np.linspace(0, L, N)
     init_state = initial_state_func(x) #Initial value of psi at each point
+    init_state[0] = 0.
+    init_state[-1] = 0.
 
     #Inverse sine transform of real part of initial state
-    alpha = dst(np.real(init_state))
+    alpha = dst(np.real(init_state[:-1]))
     
     #Inverse sine transform of imaginary part of initial state
-    eta = dst(np.imag(init_state))
+    eta = dst(np.imag(init_state[:-1]))
 
-    k = np.arange(N)
+    k = np.arange(N-1)
     psi = np.zeros((steps + 1, init_state.size), dtype=np.float64)
     psi[0] = np.real(init_state)
 
@@ -66,7 +68,7 @@ def simulate_well(N: float, initial_state_func, steps: int = 1000, dt: float = 1
         print(f'{i} / {steps}')
         t = dt * i
         psi_t_sine_transform = alpha * np.cos(hbar * np.square(np.pi * k) * t / (2 * m * np.square(L))) + eta * np.sin(hbar * np.square(np.pi * k) * t / (2 * m * np.square(L)))
-        psi[i] = idst(psi_t_sine_transform)
+        psi[i][:-1] = idst(psi_t_sine_transform)
 
     return x, psi, dt
 
@@ -81,6 +83,7 @@ def animate_well(x, psi, dt):
     ax.set_xlabel('$x$ ($m$)')
     ax.set_ylabel('$\psi(x, t)$ ($m^{-1}$)')
     ax.set_xlim(x[0], x[-1])
+    ax.set_ylim(bottom=1.2 * np.min(psi), top=1.2 * np.max(psi))
 
     psi_plot, = ax.plot(x, psi[0])
     time = ax.annotate('$t = $\t$0~s$', xy=(0., 1.), xycoords='axes fraction', xytext=(1.2, -2.0), textcoords='offset fontsize')
@@ -88,11 +91,6 @@ def animate_well(x, psi, dt):
     def update(frame):
         psi_plot.set_data(x, psi[frame+1])
         time.set(text=f'$t = $\t${np.format_float_scientific(dt * frame, precision=2, trim="k", pad_left=2, min_digits=2)}~s$')
-        #Small snippet that saves plot at t = 1e-16
-        # if np.abs(dt * frame - 1e-16) < 1e-18 and dt * frame > 1e-16 - 1e-18:
-        #     plt.savefig('comparisonplot1.eps', format='eps')
-        #     plt.savefig('comparisonplot1.png', format='png')
-        #     print('plot saved')
         return psi_plot
 
     anim = mani.FuncAnimation(fig, update, psi.shape[0] - 1, repeat=True, interval=1)
@@ -110,35 +108,12 @@ def load_data(infile, stop_index=None):
 
 # test_calc(1000+1, psi_init)
 
-x, psi, dt = simulate_well(1000+1, psi_init, steps=1500)
-save_data(x, psi, dt)
+if __name__ == '__main__':
+    #To generate data set and run animation
+    # x, psi, dt = simulate_well(1000+1, psi_init, steps=1500)
+    # save_data(x, psi, dt)
+    # animate_well(x, psi, dt)
 
-# x, psi, dt = load_data('welldata2.npz')
-# animate_well(x, psi, dt)
-
-#-----Compare results with ps-10-1 results-----#
-def resid_animation():
-    x, psi, dt = load_data('welldata.npz')
-    x, psi2, dt = load_data('welldata2.npz')
-
-    animate_well(x, np.abs(psi2 - psi), dt)
-# resid_animation()
-
-#-----Get snapshot of error at t=1e-16-----#
-def error_snapshot():
-    x, psi, dt = load_data('welldata.npz')
-    x, psi2, dt = load_data('welldata2.npz')
-
-    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-    fig.suptitle(r'Calculation of $\Psi(x, t = 1 \times 10^{-16}~s )$ using Different Integration Techniques')
-    ax1.set_ylabel(r'$\psi(x, t = 1 \times 10^{-16}~s)$ ($m^{-1}$)')
-    ax2.set_ylabel('Residuals ($m^{-1}$)')
-    ax2.set_xlabel('$x$ ($m$)')
-
-    ax1.plot(x, psi[100], label='Crank-Nicholson')
-    ax1.plot(x, psi2[100], label='Spectral')
-    ax1.legend()
-    ax2.plot(x, (psi2 - psi)[100])
-    plt.savefig('comparison.eps', format='eps')
-    plt.show()
-# error_snapshot()
+    #To run animation from saved data
+    x, psi, dt = load_data('welldata2.npz')
+    animate_well(x, psi, dt)
