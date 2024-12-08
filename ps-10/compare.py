@@ -51,7 +51,7 @@ def snapshots():
     plt.tick_params(labelcolor='none', which='both', top=False, bottom=False, left=False, right=False)
     plt.xlabel('$x$ ($m$)')
     plt.ylabel('$\psi(x,~t)$ ($m^{-1}$)')
-    plt.title('Integration of $\psi(x,~t)$ Using Different PDE Methods', y=1.08, fontstyle='italic')
+    plt.title('Integration of $\psi(x,~t)$ Using Different PDE Methods', y=1.05, fontstyle='italic')
 
     # fig.supxlabel('$x$ ($m$)')
     # fig.supylabel('$\psi(x,~t)$ ($m^{-1}$)')
@@ -76,4 +76,4 @@ def snapshots():
     plt.tight_layout()
     plt.savefig('comparison.eps', format='eps')
     plt.show()
-# snapshots()
+snapshots()
