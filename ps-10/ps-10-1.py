@@ -41,7 +41,6 @@ def simulate_well(N: float, initial_state_func, steps: int = 1000, dt: float = 1
     #Initialise an array to hold states for each timestep
     psi = np.zeros((steps + 1, init_state.size), dtype=np.complex128)
     psi[0] = init_state
-    print(psi.shape)
 
     for i in np.arange(psi.shape[0] - 1):
         # print(f'{i+1} / {steps}')
@@ -91,11 +90,17 @@ def load_data(infile, stop_index=None):
     return x, psi, dt
 
 if __name__ == '__main__':
-    #To generate data set and then run animation
+    #-----To generate data set and then run animation
     # x, psi, dt = simulate_well(N=1000+1, initial_state_func=psi_init, steps=1500)
     # save_data(x, psi, dt)
     # animate_well(x, psi, dt)
 
-    #To animate saved data set
+    #-----To animate saved data set
     x, psi, dt = load_data('welldata.npz')
     animate_well(x, psi, dt)
+
+    #-----Time simulation
+    # import timeit
+    # time = timeit.timeit('simulate_well(N=1000+1, initial_state_func=lambda x: np.exp(-(1/2) * np.square((x - 1e-8/2) / 1e-10)) * np.exp(1j * 5e10 * x), steps=1500)', 
+    #                      setup='import numpy as np\nfrom banded import banded\nfrom __main__ import simulate_well', number=1)
+    # print(time)

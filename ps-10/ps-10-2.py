@@ -109,11 +109,17 @@ def load_data(infile, stop_index=None):
 # test_calc(1000+1, psi_init)
 
 if __name__ == '__main__':
-    #To generate data set and run animation
+    #-----To generate data set and run animation
     # x, psi, dt = simulate_well(1000+1, psi_init, steps=1500)
     # save_data(x, psi, dt)
     # animate_well(x, psi, dt)
 
-    #To run animation from saved data
+    #-----To run animation from saved data
     x, psi, dt = load_data('welldata2.npz')
     animate_well(x, psi, dt)
+
+    #-----Time simulation
+    # import timeit
+    # time = timeit.timeit('simulate_well(N=1000+1, initial_state_func=lambda x: np.exp(-(1/2) * np.square((x - 1e-8/2) / 1e-10)) * np.exp(1j * 5e10 * x), steps=1500)', 
+    #                      setup='import numpy as np\nfrom banded import banded\nfrom __main__ import simulate_well', number=1)
+    # print(time)

@@ -1,10 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as mani
+import timeit
+
 import importlib
 ps = importlib.import_module('ps-10-1')
 
 #-----Compare these results with ps-10-1 results-----#
+"""
+Didn't end up being super useful, as the simulations don't proceed in lockstep
+so the residuals end up being the shape of the wavefunction.
+"""
 def resid_animation():
     x, psi1, dt = ps.load_data('welldata.npz')
     x, psi2, dt = ps.load_data('welldata2.npz')
@@ -13,6 +19,9 @@ def resid_animation():
 # resid_animation()
 
 #-----Get snapshot of error at t=1e-16-----#
+"""
+    Not super useful for the same reason as the experiment above.
+"""
 def error_snapshot():
     x, psi1, dt = ps.load_data('welldata.npz')
     x, psi2, dt = ps.load_data('welldata2.npz')
@@ -67,4 +76,4 @@ def snapshots():
     plt.tight_layout()
     plt.savefig('comparison.eps', format='eps')
     plt.show()
-snapshots()
+# snapshots()
